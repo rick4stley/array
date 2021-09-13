@@ -37,10 +37,24 @@ array.from('pizza','ice cream','toast'):print() -- output: [pizza, ice cream, to
 ```
 
 ### basic
-
 #### array.tostring(a[, separator, tostring_function, add_index, brackets])
 
-Returns a customizable string representation of a. The argument separator allows to specify a string to separate items (defaults to ", "); tostring_function can be used to print tables' content, Lua's tostring(). add_index includes "index number: " before every item (defaults to false)
+Returns a customizable string representation of a. The argument separator allows to specify a string to separate items (defaults to ", "); tostring_function can be used to print tables' content, where Lua's tostring() is not enough. add_index includes "index number: " before every item, its not done by default, the same goes for the  addition of square brackets to enclose the array's content (brackets argument).
+```lua
+a = array.from(1,2,3)
+
+a:tostring() -- "1, 2, 3"
+a:tostring(nil, nil, true, true) -- "[1: 1, 2: 2, 3: 3]"
+a:tostring(nil, function(item) return string.char(96+item) end) -- "a, b, c"
+```
+Note: remember to omit "a" when you use OOP.
+
+#### array.print(a[, separator, tostring_function, show_index])
+
+This is a shorthand for print(array.tostring(...)), except brackets are always included.
+```lua
+array.from('Hey','There'):print() -- output: [Hey, There]
+```
 
 #### array.copy(a)
 
@@ -77,4 +91,53 @@ a, b = {}, {}
 array.init(a, 1,4) -- result: {1,1,1,1}
 array.init(b, function(i) return 1 end, 4) -- result: {1,1,1,1}
 ```
-Note: remember to omit "a" when you use OOP.
+
+#### array.pushback(a, ...)
+
+Inserts any number of items in a, appending them to its end.
+``` lua
+a = array.new()
+array.pushback(a, 3, 5, 7)
+array.print(a) -- output: [3, 5, 7]
+```
+
+#### array.pushfront(a, ...)
+
+Inserts any number of items in a, appending them to its start.
+``` lua
+a = array.new()
+array.pushfront(a, 3, 5, 7)
+array.print(a) -- output: [7, 5, 3] they appear backwards!
+```
+
+#### array.popback(a[, num])
+
+Removes the last num items from a, or just one if not specified. num is clamped between 1 and #a.
+``` lua
+a = array.from(2,4,6)
+third, second, first = a:popback(3) -- 6, 4, 2
+print(a:popback(6000)) -- output: nil
+```
+
+
+#### array.popfront(a[, num])
+
+Removes the first num items from a, or just one if not specified.
+``` lua
+a = array.from(2,4,6)
+first, second, third = a:popfront(3) -- 2, 4, 6
+```
+
+#### array.first(a)
+
+Simply returns the first item.
+``` lua
+array.first({4,1,7}) -- result: 4
+```
+
+#### array.last(a)
+
+Returns the last item.
+``` lua
+array.first({99,34,12}) -- result: 12
+```
